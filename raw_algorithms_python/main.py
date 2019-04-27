@@ -53,15 +53,5 @@ def save_compressed(compressed_array: "np.array np.uint8) type", name_to_save):
     image.save(str(name_to_save))
 
 
-random_drawing = compress(Image.open("Untitled.png"))
-parrot_image = compress(Image.open("photo_2018-12-10_22-28-40.jpg"))
-letter_ts = compress(Image.open("Ц.png"))
-comic_con_photo = compress(Image.open("kiev comic conS80922-141312.jpg"))
-
-save_compressed(two_colored(random_drawing), "new random.png")
-save_compressed(two_colored(parrot_image), "new parrot.png")
-save_compressed(two_colored(letter_ts), "new letter.png")
-save_compressed(two_colored(comic_con_photo), "new comic con photo.png")
-
-if __name__ == "__main__":
+if __name__ == "main":
     tests.test.test()

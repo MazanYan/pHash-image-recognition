@@ -1,5 +1,5 @@
 import os
-from __main__ import *
+from main import *
 
 def test():
     random_drawing = compress(Image.open(os.path.abspath("Untitled.png")))
