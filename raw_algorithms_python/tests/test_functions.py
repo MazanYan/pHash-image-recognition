@@ -56,20 +56,49 @@ class Test(unittest.TestCase):
         except:
             raise AssertionError
 
-    def test_similarity(self):
+    def test_hash_determinance(self):
+        parrot_image = "photo_2018-12-10_22-28-40.jpg"
+        try:
+            tuple_hash1 = self.test_hasher_class.hash_image(parrot_image)
+            tuple_hash2 = self.test_hasher_class.hash_image(parrot_image)
+            hash1 = tuple_hash1[1]
+            hash2 = tuple_hash2[1]
+            # check out if two hashes for the same images are equal
+            self.assertEqual(self.test_hash_comparator.similarity_percent(hash1, hash2), 1)
+            print("The same images hash with the same hash")
+        except:
+            raise AssertionError("The same photos are hashed with different hashes")
+
+    # check out if similar photos are more than 90% similar
+    def test_hash_similar(self):
         parrot_image = "photo_2018-12-10_22-28-40.jpg"
         new_parrot_image = "edited photo_2018-12-10_22-28-40.jpg"
         try:
             tuple_hash1 = self.test_hasher_class.hash_image(parrot_image)
-            tuple_hash2 = self.test_hasher_class.hash_image(parrot_image)
-            tuple_hash3 = self.test_hasher_class.hash_image(new_parrot_image)
+            tuple_hash2 = self.test_hasher_class.hash_image(new_parrot_image)
+            hash1 = tuple_hash1[1]
+            hash2 = tuple_hash2[1]
+            self.assertGreater(self.test_hash_comparator.similarity_percent(hash1, hash2), 0.9)
+            print("Similar images are recognised similar")
+        except:
+            raise AssertionError("Similar images were recognised not similar")
+
+    # check out if not similar photos are less than 20% similar
+    def test_hash_not_similar(self):
+        parrot_image = "photo_2018-12-10_22-28-40.jpg"
+        random_drawing = "Untitled.png"
+        letter_ts = "Ц.png"
+        try:
+            tuple_hash1 = self.test_hasher_class.hash_image(parrot_image)
+            tuple_hash2 = self.test_hasher_class.hash_image(random_drawing)
+            tuple_hash3 = self.test_hasher_class.hash_image(letter_ts)
             hash1 = tuple_hash1[1]
             hash2 = tuple_hash2[1]
             hash3 = tuple_hash3[1]
-            # check out if two hashes for the same images are equal
-            self.assertEqual(self.test_hash_comparator.similarity_percent(hash1, hash2), 1)
-            # check out if similar photos are more than 90% similar
-            self.assertGreater(self.test_hash_comparator.similarity_percent(hash1, hash3), 0.9)
-            print("Images similarity defining works correctly")
+            self.assertLess(self.test_hash_comparator.similarity_percent(hash1, hash2), 0.2)
+            # check out if the hash function recognises different random drawing and letter
+            # fails here
+            self.assertLess(self.test_hash_comparator.similarity_percent(hash2, hash3), 0.5)
+            print("Not similar images are recognised not similar")
         except:
-            raise AssertionError
+            raise AssertionError("Not similar images were recognised similar")
