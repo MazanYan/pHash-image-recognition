@@ -5,8 +5,7 @@ import numpy as np
 
 
 # Class to get images from some folder and hash them with simple pHash algorithm
-
-class HashBuilder():
+class HashBuilder:
     def __init__(self, path):
         self.images_path = path
 
@@ -14,7 +13,7 @@ class HashBuilder():
     Compresses image object into 8x8 square array to be used in saving as a new file or recoloring as two-colored image
     for further hash building
     The method saves initial colors with saving only each 7th row/column of image array
-    :param image an object of Image class
+    :param (image) an object of Image class
     :return 8x8 numpy image array of uint8 type
     """
     @staticmethod
@@ -34,7 +33,7 @@ class HashBuilder():
     Finds average brightness of image and discretizes all other colors,
         making each point with smaller brightness black
         and making each point with greater brightness white
-    :param compressed_image 8x8 numpy image array of uint8 type that is already compressed by __compress__ method
+    :param (compressed_image) 8x8 numpy image array of uint8 type that is already compressed by __compress__ method
     :return two-colored 8x8 numpy image array of uint8 type
     """
     @staticmethod
@@ -49,8 +48,8 @@ class HashBuilder():
 
     """
     Saves compressed image as image file. Is used for tests only
-    :param compressed_array 8x8 numpy image array of uint8 type
-    :param name_to_save image name with path to be saved in
+    :param (compressed_array) 8x8 numpy image array of uint8 type
+    :param (name_to_save) image name with path to be saved in
     :return None
     """
     @staticmethod
@@ -63,7 +62,7 @@ class HashBuilder():
     Hashes each point into bytearray depending of its' color:
         black point gets hashed into \0 symbol,
         white point gets hashed into \1 symbol
-    :param compressed_array 8x8 numpy image array of uint8 type
+    :param (compressed_array) 8x8 numpy image array of uint8 type
     :return bytearray sequence of \0 and \1 symbols
     """
     @staticmethod
@@ -72,9 +71,32 @@ class HashBuilder():
         bytearr = "".join(["\0" if (el - np.array([255, 255, 255])).any() else "\1" for el in all_array_points])
         return bytearr.encode()
 
+    """
+    Composition of "private" class methods used to create image hash
+    Opens image in class folder firstly, then compresses it,
+    then discretizes colors array making him hav only two colors, then builds hash
+    :param (image_name) name of image file to be imported from class image folder
+    :return tuple of image name with path and hash of input image
+    """
     def hash_image(self, image_name: "str"):
         return self.images_path + image_name, self.__build_hash__(self.__two_colored__(self.__compress__(Image.open(self.images_path + image_name))))
 
 
-class CheckHash():
-    pass
+# Checking how similar two hashes are
+class CheckHash:
+
+    # def __init__(self):
+    #     self.
+
+    """
+    Calculates Hemming distance over two hashes and outputs difference percent
+    :param (dict_hash1) the first single-element dict with file name key and hash value as value
+    :param (dict_hash2) the second single-element dict with file name key and hash value as value
+    :return hemming distance
+    """
+    @staticmethod
+    def similarity_percent(hash1, hash2):
+        hemming_distance = reduce(lambda accum, element: accum+1 if element[0]!=element[1] else accum, zip(list(hash1), list(hash2)), 0)
+        # 8x8 numpy array
+        image_size = 64
+        return 1 - hemming_distance/image_size
