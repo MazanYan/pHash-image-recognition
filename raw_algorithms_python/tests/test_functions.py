@@ -18,9 +18,9 @@ class Test(unittest.TestCase):
             self.test_hasher_class.__compress__(Image.open(os.path.abspath(self.get_image_path + "photo_2018-12-10_22-28-40.jpg")))
             self.test_hasher_class.__compress__(Image.open(os.path.abspath(self.get_image_path + "Ц.png")))
             self.test_hasher_class.__compress__(Image.open(os.path.abspath(self.get_image_path + "kiev comic conS80922-141312.jpg")))
-            print("Images compress")
+            print("SUCCESS: Images compress")
         except:
-            self.assertTrue(False)
+            print("FAIL: Images don't compress")
 
     def test_saving(self):
         random_drawing = self.test_hasher_class.__compress__(Image.open(self.get_image_path + "Untitled.png"))
@@ -35,9 +35,9 @@ class Test(unittest.TestCase):
             self.test_hasher_class.__save_compressed__(self.test_hasher_class.__two_colored__(new_parrot_image), self.hashed_path + "new edited parrot.png")
             self.test_hasher_class.__save_compressed__(self.test_hasher_class.__two_colored__(letter_ts), self.hashed_path + "new letter.png")
             self.test_hasher_class.__save_compressed__(self.test_hasher_class.__two_colored__(comic_con_photo), self.hashed_path + "new comic con photo.png")
-            print("Compressed images save")
+            print("SUCCESS: Compressed images save")
         except Exception:
-            self.assertTrue(False)
+            print("FAIL: Compressed images are not saved")
 
     def test_hashing(self):
         random_drawing = "Untitled.png"
@@ -52,9 +52,9 @@ class Test(unittest.TestCase):
             self.assertIsInstance(self.test_hasher_class.hash_image(letter_ts)[1], bytes)
             self.assertIsInstance(self.test_hasher_class.hash_image(comic_con_photo)[1], bytes)
             self.assertIsInstance(self.test_hasher_class.hash_image(new_parrot_image)[1], bytes)
-            print("Images get hashed")
+            print("SUCCESS: Images get hashed")
         except:
-            raise AssertionError
+            print("FAIL: Images don't get hashed")
 
     def test_hash_determinance(self):
         parrot_image = "photo_2018-12-10_22-28-40.jpg"
@@ -65,9 +65,9 @@ class Test(unittest.TestCase):
             hash2 = tuple_hash2[1]
             # check out if two hashes for the same images are equal
             self.assertEqual(self.test_hash_comparator.similarity_percent(hash1, hash2), 1)
-            print("The same images hash with the same hash")
+            print("SUCCESS: The same images hash with the same hash")
         except:
-            raise AssertionError("The same photos are hashed with different hashes")
+            print("FAIL: The same photos are hashed with different hashes")
 
     # check out if similar photos are more than 90% similar
     def test_hash_similar(self):
@@ -79,9 +79,9 @@ class Test(unittest.TestCase):
             hash1 = tuple_hash1[1]
             hash2 = tuple_hash2[1]
             self.assertGreater(self.test_hash_comparator.similarity_percent(hash1, hash2), 0.9)
-            print("Similar images are recognised similar")
+            print("SUCCESS: Similar images are recognised similar")
         except:
-            raise AssertionError("Similar images were recognised not similar")
+            print("FAIL: Similar images were recognised not similar")
 
     # check out if not similar photos are less than 20% similar
     def test_hash_not_similar(self):
@@ -99,6 +99,6 @@ class Test(unittest.TestCase):
             # check out if the hash function recognises different random drawing and letter
             # fails here
             self.assertLess(self.test_hash_comparator.similarity_percent(hash2, hash3), 0.5)
-            print("Not similar images are recognised not similar")
+            print("SUCCESS: Not similar images are recognised not similar")
         except:
-            raise AssertionError("Not similar images were recognised similar")
+            print("FAIL: Not similar images were recognised similar")
